@@ -30,25 +30,51 @@ import Table from "./Table";
 
 ///////////////////////SEARCH ON A DATATABLE
 
+// function App() {
+//   const [query, setQuery] = useState("");
+//   const keys = ["first_name", "last_name", "email"];
+//   const search = (data) => {
+//     return data.filter((item) =>
+//       keys.some((key) => item[key].toLowerCase().includes(query))
+//     );
+//   };
+// return (
+//   <div className="app">
+//       <input
+//         className="search"
+//         placeholder="Search..."
+//         onChange={(e) => setQuery(e.target.value.toLowerCase())}
+//       />
+//     {<Table data={Search(Users)} />}
+//   </div>
+// );
+// }
+
+
+////////////////////// API SEARCH
+
 function App() {
   const [query, setQuery] = useState("");
-  const keys = ["first_name", "last_name", "email"];
-  const Search = (data) => {
-    return data.filter((item) =>
-      keys.some((key) => item[key].toLowerCase().includes(query))
-    );
-  };
-return (
-  <div className="app">
-      <input
-        className="search"
-        placeholder="Search..."
-        onChange={(e) => setQuery(e.target.value.toLowerCase())}
-      />
-    {<Table data={Search(Users)} />}
-  </div>
-);
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await fetch(`http://localhost:3000?q=${query}`);
+      const data =await res.json();
+      setData(data);
+    };
+    if (query.length === 0 || query.length > 2) fetchData();
+  }, [query]);
+
+  return (
+    <div className="app">
+        <input
+          className="search"
+          placeholder="Search..."
+          onChange={(e) => setQuery(e.target.value.toLowerCase())}
+        />
+      {<Table data={data} />}
+    </div>
+  );
 }
-
-
 export default App;
